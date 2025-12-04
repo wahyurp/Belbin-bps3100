@@ -1,14 +1,13 @@
 // netlify/functions/belbin-proxy.js
 
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKJr003Ws5vzFTHjCXZaU5j0DNpcRCpmiYN-4nTlr7T8e9LatBhrxfTVpIN93DWPCC/exec';
+const SCRIPT_URL =
+  'https://script.google.com/macros/s/AKfycbzKJr003Ws5vzFTHjCXZaU5j0DNpcRCpmiYN-4nTlr7T8e9LatBhrxfTVpIN93DWPCC/exec';
 
-/**
- * Netlify Function sebagai proxy ke Google Apps Script
- */
+// Netlify pakai Node 18+, fetch sudah global
 exports.handler = async (event, context) => {
   const origin = event.headers.origin || '';
 
-  // Handle preflight CORS kalau dipanggil dari luar
+  // Handle preflight CORS
   if (event.httpMethod === 'OPTIONS') {
     return {
       statusCode: 200,
@@ -32,7 +31,7 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    // Forward body JSON apa adanya ke Apps Script
+    // Teruskan body JSON apa adanya ke Apps Script
     const resp = await fetch(SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
