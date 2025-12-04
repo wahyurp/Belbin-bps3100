@@ -638,13 +638,14 @@ function roleBarWidth(score) {
 
 
 // GANTI dengan URL web app yang sama seperti di LoginScreen.vue
-const GSCRIPT_URL = "https://script.google.com/macros/s/AKfycbzKJr003Ws5vzFTHjCXZaU5j0DNpcRCpmiYN-4nTlr7T8e9LatBhrxfTVpIN93DWPCC/exec";
+// const GSCRIPT_URL = "https://script.google.com/macros/s/AKfycbzKJr003Ws5vzFTHjCXZaU5j0DNpcRCpmiYN-4nTlr7T8e9LatBhrxfTVpIN93DWPCC/exec";
+const API_URL = '/.netlify/functions/belbin-proxy';
 
 async function markUserFinished() {
   if (!currentUser.value || !currentUser.value.identifier) return;
 
   try {
-    await fetch(GSCRIPT_URL, {
+    await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -715,8 +716,10 @@ async function handleNextTeamPref() {
       const identifier =
         currentUser.value.username || currentUser.value.email;
 
-      const GSCRIPT_URL = "https://script.google.com/macros/s/AKfycbzKJr003Ws5vzFTHjCXZaU5j0DNpcRCpmiYN-4nTlr7T8e9LatBhrxfTVpIN93DWPCC/exec"
-      const res = await fetch(GSCRIPT_URL, {
+      // const GSCRIPT_URL = "https://script.google.com/macros/s/AKfycbzKJr003Ws5vzFTHjCXZaU5j0DNpcRCpmiYN-4nTlr7T8e9LatBhrxfTVpIN93DWPCC/exec"
+      const API_URL = '/.netlify/functions/belbin-proxy';
+
+      const res = await fetch(API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
