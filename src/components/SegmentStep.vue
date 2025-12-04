@@ -56,14 +56,16 @@
     </p>
 
     <!-- TOAST ERROR -->
-    <div v-if="toastVisible" class="toast-error">
+    <!-- <div v-if="toastVisible" class="toast-error">
       {{ toastMessage }}
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script setup>
 import { computed, reactive, watch, ref } from "vue";
+import { showToast } from "../App.vue"; // atau dari util sendiri
+import { showToast } from "../toastBus";
 
 const props = defineProps({
   title: String,
@@ -200,7 +202,6 @@ function updateValue(itemId, event) {
       showToast(`Sisa poin hanya ${remaining}.`);
     }
 
-    // PAKSA UI BALIK KE NILAI SEBELUMNYA
     event.target.value = prevRaw === "" ? "" : String(prevRaw);
     return;
   }

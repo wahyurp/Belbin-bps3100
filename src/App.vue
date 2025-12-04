@@ -1,5 +1,8 @@
 <template>
   <div class="app-root">
+    <div v-if="toastVisible" class="app-toast">
+      {{ toastMessage }}
+    </div>
     <!-- audio background, disembunyikan -->
   <!-- <audio
     ref="bgAudio"
@@ -133,6 +136,8 @@ import SegmentTeamPreference from "./components/SegmentTeamPreference.vue";
 import BelbinResultView from "./components/BelbinResultView.vue";
 
 
+import { toastVisible, toastMessage } from "./toastBus";
+import { ref } from "vue";
 import { segments as segmentData } from "./belbinData";
 import { computeBelbinScores } from "./belbinScoring";
 import confetti from "canvas-confetti";
@@ -156,7 +161,14 @@ const dummy = {
   VI: { a: 3, b: 0, c: 4, d:2, e: 2, f: 0, g: 0, h: 0, i:0  },
   VII: { a: 4, b: 0, c: 0, d:0, e: 5, f: 2, g: 0, h: 0, i:0  },
 };
+function showToast(msg) {
+  toastMessage.value = msg;
+  toastVisible.value = true;
 
+  setTimeout(() => {
+    toastVisible.value = false;
+  }, 2200);
+}
 console.log(computeBelbinScores(dummy));
 const metamorphStages = [
   {
@@ -802,6 +814,8 @@ function triggerConfetti() {
     origin: { y: 0.6 },
   });
 }
+
+export { showToast };
 </script>
 
 
@@ -821,6 +835,23 @@ function triggerConfetti() {
   padding: 2rem 1.5rem 1rem;
 }
 
+
+.app-toast {
+  position: fixed;
+  /* pakai TOP, bukan bottom */
+  top: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 90%;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(185, 28, 28, 0.4);
+  z-index: 9999;
+}
 /* ========== HEADER ========== */
 /* ROW 1: Caption + Lottie berdekatan di tengah */
 /* ROW 1: Caption + Lottie */
@@ -1120,5 +1151,22 @@ function triggerConfetti() {
   align-items: center;
   justify-content: center;
 }
+
+.app-toast {
+  position: fixed;
+  top: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 90%;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(185, 28, 28, 0.4);
+  z-index: 9999;
+}
+
 
 </style>
