@@ -463,9 +463,17 @@ watch(
   { deep: true }
 );
 
+watch(showResult, (val) => {
+  if (val) {
+    scrollToTop();
+  }
+});
+
+
 
 watch(currentIndex, (val) => {
   localStorage.setItem(CURRENT_INDEX_KEY, String(val));
+  scrollToTop();
 });
 
 // ================== AUDIO CONTROL ==================
@@ -499,6 +507,14 @@ function toggleMusic() {
     playMusic();
   }
 }
+
+function scrollToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth", // kalau mau tanpa animasi: hapus baris ini
+  });
+}
+
 
 function stopMusic() {
   if (bgAudio.value) {
