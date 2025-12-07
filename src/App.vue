@@ -562,7 +562,7 @@ function handleLoginSuccess(payload) {
   localStorage.setItem(AUTH_KEY, JSON.stringify(userData));
 
   // === kalau user SUDAH pernah mengisi, dan server sudah punya hasil ===
-  if (payload.isFinished === "1" && payload.result) {
+  if (payload.result) {
     serverScores.value = payload.result.scores || null;
     serverPrimaryRole.value = payload.result.primaryRole || null;
 
@@ -579,10 +579,12 @@ function handleLoginSuccess(payload) {
     showResult.value = true;
     currentIndex.value = segments.length;
     localStorage.setItem(RESULT_SHOWN_KEY, "1");
+  }else {
+    // belum pernah isi
+    hasStarted.value = false;
+    showResult.value = false;    
   }
-
 }
-
 
 
 function startWithMusic() {

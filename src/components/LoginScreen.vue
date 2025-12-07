@@ -155,13 +155,10 @@ async function handleSubmit() {
 
     if (!data.ok) {
       if (data.reason === "NOT_FOUND") {
-        errorMessage.value = "Username / email tidak terdaftar.";
+        errorMessage.value = "Username / email tidak sesuai dengan community BPS.";
       } else if (data.reason === "WRONG_PASSWORD") {
         errorMessage.value =
-          "Tanggal lahir tidak sesuai dengan data NIP di sheet.";
-      } else if (data.reason === "ALREADY_FINISHED") {
-        errorMessage.value =
-          "Kamu sudah pernah mengisi dan menyelesaikan kuis ini. Terima kasih 🙌";
+          "Tanggal lahir tidak sesuai dengan data NIP 18 digit di community BPS.";
       } else if (data.reason === "EMPTY_IDENTIFIER") {
         errorMessage.value = "Username / email kosong.";
       } else if (data.reason === "EMPTY_PASSWORD") {
