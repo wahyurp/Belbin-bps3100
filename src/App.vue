@@ -137,7 +137,6 @@ import BelbinResultView from "./components/BelbinResultView.vue";
 
 
 import { toastVisible, toastMessage } from "./toastBus";
-import { ref } from "vue";
 import { segments as segmentData } from "./belbinData";
 import { computeBelbinScores } from "./belbinScoring";
 import confetti from "canvas-confetti";
@@ -161,14 +160,14 @@ const dummy = {
   VI: { a: 3, b: 0, c: 4, d:2, e: 2, f: 0, g: 0, h: 0, i:0  },
   VII: { a: 4, b: 0, c: 0, d:0, e: 5, f: 2, g: 0, h: 0, i:0  },
 };
-function showToast(msg) {
-  toastMessage.value = msg;
-  toastVisible.value = true;
+// function showToast(msg) {
+//   toastMessage.value = msg;
+//   toastVisible.value = true;
 
-  setTimeout(() => {
-    toastVisible.value = false;
-  }, 2200);
-}
+//   setTimeout(() => {
+//     toastVisible.value = false;
+//   }, 2200);
+// }
 console.log(computeBelbinScores(dummy));
 const metamorphStages = [
   {
@@ -248,6 +247,7 @@ const musicEnabled = ref(false);  // user pilih pakai musik?
 const isPlaying = ref(false);     // status audio sekarang
 const teamPreference = ref({
   teams: [],
+  comfortTeams: [],
   suggestion: "",
 });
 const isSubmittingResult = ref(false);
@@ -667,7 +667,10 @@ function roleBarWidth(score) {
 
 // GANTI dengan URL web app yang sama seperti di LoginScreen.vue
 // const GSCRIPT_URL = "https://script.google.com/macros/s/AKfycbzKJr003Ws5vzFTHjCXZaU5j0DNpcRCpmiYN-4nTlr7T8e9LatBhrxfTVpIN93DWPCC/exec";
-const API_URL = '/.netlify/functions/belbin-proxy';
+// const API_URL = '/.netlify/functions/belbin-proxy';
+const API_URL = import.meta.env.DEV
+  ? "https://belbin3100.netlify.app/.netlify/functions/belbin-proxy"  // saat npm run dev
+  : "/.netlify/functions/belbin-proxy";   
 
 async function markUserFinished() {
   if (!currentUser.value || !currentUser.value.identifier) return;
@@ -745,7 +748,10 @@ async function handleNextTeamPref() {
         currentUser.value.username || currentUser.value.email;
 
       // const GSCRIPT_URL = "https://script.google.com/macros/s/AKfycbzKJr003Ws5vzFTHjCXZaU5j0DNpcRCpmiYN-4nTlr7T8e9LatBhrxfTVpIN93DWPCC/exec"
-      const API_URL = '/.netlify/functions/belbin-proxy';
+      const API_URL = import.meta.env.DEV
+        ? "https://belbin3100.netlify.app/.netlify/functions/belbin-proxy"  // saat npm run dev
+        : "/.netlify/functions/belbin-proxy";   
+        
 
       const res = await fetch(API_URL, {
         method: "POST",
@@ -815,7 +821,6 @@ function triggerConfetti() {
   });
 }
 
-export { showToast };
 </script>
 
 

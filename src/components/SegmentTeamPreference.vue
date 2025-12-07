@@ -1,67 +1,65 @@
 <template>
   <div class="segment-card">
     <h2>Preferensi Tim</h2>
+
+    <!-- ===== PERTANYAAN 1: KONTRIBUSI OPTIMAL ===== -->
     <p class="segment-description">
-      Saya merasa, saya dapat berkontribusi dengan optimal pada tim berikut
+      Saya merasa, saya dapat <b>berkontribusi dengan optimal</b> pada tim berikut
       (Pilih minimal 1, maksimal 3).
     </p>
 
-    <!-- PILIHAN TIM -->
-    <div class="pref-list">
+    <div class="pref-section">
       <div
         class="pref-row"
-        v-for="(value, idx) in localTeams"
-        :key="idx"
+        v-for="(value, idx) in localTeamsOptimal"
+        :key="'opt-' + idx"
       >
         <label class="pref-label">
           Pilihan {{ idx + 1 }}
         </label>
 
-        <!-- AUTOCOMPLETE ala Materialize -->
         <div class="pref-autocomplete">
           <input
             type="text"
             class="pref-input"
-            v-model="searchTexts[idx]"
-            :placeholder="localTeams[idx] || 'Ketik nama tim...'"
-            @focus="openDropdown(idx)"
-            @input="onSearchInput(idx)"
-            @blur="handleBlur(idx)"
+            v-model="searchTextsOptimal[idx]"
+            :placeholder="localTeamsOptimal[idx] || 'Ketik nama tim...'"
+            @focus="openDropdown('optimal', idx)"
+            @input="onSearchInput('optimal', idx)"
+            @blur="handleBlur('optimal', idx)"
           />
 
-          <!-- DROPDOWN SUGGESTION -->
+          <!-- DROPDOWN -->
           <ul
-            v-if="activeIndex === idx && hasAnyOption(idx)"
+            v-if="isDropdownOpen('optimal', idx) && hasAnyOption('optimal', idx)"
             class="pref-dropdown"
           >
-            <!-- BPS PROVINSI -->
             <li
-              v-if="optionsProvForIndex(idx).length"
+              v-if="optionsProvForIndex('optimal', idx).length"
               class="pref-group"
             >
               BPS Provinsi
             </li>
             <li
-              v-for="team in optionsProvForIndex(idx)"
-              :key="'prov-' + team"
+              v-for="team in optionsProvForIndex('optimal', idx)"
+              :key="'opt-prov-' + team"
               class="pref-item"
-              @mousedown.prevent="selectOption(idx, team)"
+              @mousedown.prevent="selectOption('optimal', idx, team)"
             >
               {{ team }}
             </li>
 
-            <!-- BPS KAB/KOTA -->
             <li
-              v-if="optionsKabkoForIndex(idx).length"
+              v-if="optionsKabkoForIndex('optimal', idx).length"
               class="pref-group"
             >
               BPS Kabupaten/Kota
             </li>
             <li
-              v-for="team in optionsKabkoForIndex(idx)"
-              :key="'kab-' + team"
+              v-for="team in optionsKabkoForIndex('optimal', idx)"
+              :key="'opt-kab-' + team"
               class="pref-item"
-              @mousedown.prevent="selectOption(idx, team)"
+              @mousedown.prevent="selectOption('optimal', idx, team)"
             >
               {{ team }}
             </li>
@@ -69,27 +67,117 @@
         </div>
 
         <button
-          v-if="localTeams.length > 1"
+          v-if="localTeamsOptimal.length > 1"
           type="button"
           class="btn-remove"
-          @click="removeRow(idx)"
+          @click="removeRow('optimal', idx)"
         >
           ✕
         </button>
       </div>
+
+      <div class="pref-actions">
+        <button
+          v-if="localTeamsOptimal.length < 3"
+          type="button"
+          class="btn-add"
+          :disabled="!canAddRowOptimal"
+          @click="addRow('optimal')"
+        >
+          + Tambah pilihan
+        </button>
+      </div>
     </div>
 
-    <!-- TOMBOL TAMBAH DI TENGAH -->
-    <div class="pref-actions">
-      <button
-        v-if="localTeams.length < 3"
-        type="button"
-        class="btn-add"
-        :disabled="!canAddRow"
-        @click="addRow"
+    <hr class="pref-divider" />
+
+    <!-- ===== PERTANYAAN 2: PALING NYAMAN ===== -->
+    <p class="segment-description">
+      Saya merasa, saya <b>paling nyaman</b> bekerja pada tim berikut
+      (Pilih minimal 1, maksimal 3).
+    </p>
+
+    <div class="pref-section">
+      <div
+        class="pref-row"
+        v-for="(value, idx) in localTeamsComfort"
+        :key="'comfort-' + idx"
       >
-        + Tambah pilihan
-      </button>
+        <label class="pref-label">
+          Pilihan {{ idx + 1 }}
+        </label>
+
+        <div class="pref-autocomplete">
+          <input
+            type="text"
+            class="pref-input"
+            v-model="searchTextsComfort[idx]"
+            :placeholder="localTeamsComfort[idx] || 'Ketik nama tim...'"
+            @focus="openDropdown('comfort', idx)"
+            @input="onSearchInput('comfort', idx)"
+            @blur="handleBlur('comfort', idx)"
+          />
+
+          <!-- DROPDOWN -->
+          <ul
+            v-if="
+              isDropdownOpen('comfort', idx) && hasAnyOption('comfort', idx)
+            "
+            class="pref-dropdown"
+          >
+            <li
+              v-if="optionsProvForIndex('comfort', idx).length"
+              class="pref-group"
+            >
+              BPS Provinsi
+            </li>
+            <li
+              v-for="team in optionsProvForIndex('comfort', idx)"
+              :key="'comfort-prov-' + team"
+              class="pref-item"
+              @mousedown.prevent="selectOption('comfort', idx, team)"
+            >
+              {{ team }}
+            </li>
+
+            <li
+              v-if="optionsKabkoForIndex('comfort', idx).length"
+              class="pref-group"
+            >
+              BPS Kabupaten/Kota
+            </li>
+            <li
+              v-for="team in optionsKabkoForIndex('comfort', idx)"
+              :key="'comfort-kab-' + team"
+              class="pref-item"
+              @mousedown.prevent="selectOption('comfort', idx, team)"
+            >
+              {{ team }}
+            </li>
+          </ul>
+        </div>
+
+        <button
+          v-if="localTeamsComfort.length > 1"
+          type="button"
+          class="btn-remove"
+          @click="removeRow('comfort', idx)"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="pref-actions">
+        <button
+          v-if="localTeamsComfort.length < 3"
+          type="button"
+          class="btn-add"
+          :disabled="!canAddRowComfort"
+          @click="addRow('comfort')"
+        >
+          + Tambah pilihan
+        </button>
+      </div>
     </div>
 
     <!-- TEXTAREA SARAN -->
@@ -105,6 +193,7 @@
       ></textarea>
     </div>
 
+    <!-- BUTTONS -->
     <div class="segment-actions">
       <button
         v-if="showBack"
@@ -115,7 +204,6 @@
       >
         Sebelumnya
       </button>
-
 
       <button
         type="button"
@@ -128,42 +216,55 @@
           <span>Sedang mengirim...</span>
         </template>
         <template v-else>
-          {{ isLast ? 'Lihat Hasil' : 'Lanjut' }}
+          {{ isLast ? "Lihat Hasil" : "Lanjut" }}
         </template>
       </button>
-
     </div>
 
     <!-- HINT -->
-    <p v-if="!hasValidTeam" class="hint">
-      Pilih minimal 1 tim dari daftar sebelum melanjutkan.
+    <p v-if="!hasValidOptimalTeam" class="hint">
+      Pilih minimal 1 tim pada pertanyaan pertama.
+    </p>
+    <p v-else-if="!hasValidComfortTeam" class="hint">
+      Pilih minimal 1 tim pada pertanyaan kedua.
     </p>
     <p v-else-if="!isSuggestionEnough" class="hint">
       Saran minimal 50 karakter.
     </p>
 
     <!-- ============ MODAL KONFIRMASI ============ -->
-    <div
-      v-if="showConfirm"
-      class="modal-backdrop"
-    >
+    <div v-if="showConfirm" class="modal-backdrop">
       <div class="modal-card">
         <h3>Konfirmasi Preferensi Tim</h3>
         <p class="modal-text">
-          Berikut pilihan tim yang kamu isi. Pastikan sudah sesuai sebelum melihat hasil Belbin:
+          Berikut pilihan tim yang kamu isi. Pastikan sudah sesuai sebelum
+          melihat hasil Belbin:
         </p>
 
-        <ul class="modal-list">
-          <li
-            v-for="(team, i) in validTeams"
-            :key="i"
-          >
-            <strong>Pilihan {{ i + 1 }}:</strong> {{ team }}
-          </li>
-        </ul>
+        <div v-if="validTeamsOptimal.length">
+          <strong>Pertanyaan 1 – Kontribusi optimal:</strong>
+          <ul class="modal-list">
+            <li v-for="(team, i) in validTeamsOptimal" :key="'m-opt-' + i">
+              <strong>Pilihan {{ i + 1 }}:</strong> {{ team }}
+            </li>
+          </ul>
+        </div>
 
-        <p v-if="validTeams.length === 0" class="modal-text">
-          Tidak ada tim yang valid. Silakan periksa kembali.
+        <div v-if="validTeamsComfort.length">
+          <strong>Pertanyaan 2 – Paling nyaman bekerja:</strong>
+          <ul class="modal-list">
+            <li v-for="(team, i) in validTeamsComfort" :key="'m-comf-' + i">
+              <strong>Pilihan {{ i + 1 }}:</strong> {{ team }}
+            </li>
+          </ul>
+        </div>
+
+        <p
+          v-if="!validTeamsOptimal.length || !validTeamsComfort.length"
+          class="modal-text"
+        >
+          Masih ada pertanyaan yang belum terisi dengan tim valid. Silakan
+          periksa kembali.
         </p>
 
         <div class="modal-actions">
@@ -177,7 +278,11 @@
           <button
             type="button"
             class="btn-primary"
-            :disabled="validTeams.length === 0 || loading"
+            :disabled="
+              !validTeamsOptimal.length ||
+              !validTeamsComfort.length ||
+              loading
+            "
             @click="confirmAndEmit"
           >
             <template v-if="loading">
@@ -188,7 +293,6 @@
               Konfirmasi &amp; Lanjut
             </template>
           </button>
-
         </div>
       </div>
     </div>
@@ -201,6 +305,7 @@ import { ref, watch, computed } from "vue";
 
 /* ===== OPSI TIM ===== */
 const TEAM_OPTIONS_PROV = [
+  "Kepala Kantor/Struktural",
   "Tim Bagian Umum SDM dan Hukum",
   "Tim Bagian Umum Pengadaan Barang dan Jasa",
   "Tim Bagian Umum Humas dan Kelembagaan",
@@ -225,6 +330,7 @@ const TEAM_OPTIONS_PROV = [
 ];
 
 const TEAM_OPTIONS_KABKO = [
+  "Statistisi Ahli Madya BPS Kabupaten/Kota",
   "Bagian Umum BPS Kabupaten/Kota",
   "Tim Statistik Sosial BPS Kabupaten/Kota",
   "Tim Statistik Distribusi BPS Kabupaten/Kota",
@@ -242,7 +348,7 @@ function isValidTeam(val) {
 const props = defineProps({
   modelValue: {
     type: Object,
-    default: () => ({ teams: [], suggestion: "" }),
+    default: () => ({ teams: [], comfortTeams: [], suggestion: "" }),
   },
   showBack: {
     type: Boolean,
@@ -252,7 +358,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  // ⬇️ TAMBAH INI
   loading: {
     type: Boolean,
     default: false,
@@ -261,33 +366,51 @@ const props = defineProps({
 
 const emit = defineEmits(["update:modelValue", "back", "next"]);
 
-
 /* ===== STATE LOKAL ===== */
-const localTeams = ref([]);
+const localTeamsOptimal = ref([]);
+const localTeamsComfort = ref([]);
+
+const searchTextsOptimal = ref([]);
+const searchTextsComfort = ref([]);
+
 const suggestion = ref("");
-const searchTexts = ref([]);
+
+const showConfirm = ref(false);
+
+/* dropdown state */
+const activeBlock = ref(null); // 'optimal' | 'comfort'
 const activeIndex = ref(null);
 
-/* modal */
-const showConfirm = ref(false);
+/* ----- HELPER REFS PER BLOK ----- */
+function getRefs(block) {
+  if (block === "optimal") {
+    return {
+      teams: localTeamsOptimal,
+      search: searchTextsOptimal,
+    };
+  }
+  return {
+    teams: localTeamsComfort,
+    search: searchTextsComfort,
+  };
+}
 
 /* ----- SYNC DARI PARENT ----- */
 function syncFromModel() {
   const mv = props.modelValue || {};
-  let teamsFromModel = [];
 
-  if (Array.isArray(mv)) {
-    teamsFromModel = mv;
-  } else if (Array.isArray(mv.teams)) {
-    teamsFromModel = mv.teams;
-  }
+  const opt = Array.isArray(mv.teams) ? mv.teams : [];
+  const comf = Array.isArray(mv.comfortTeams) ? mv.comfortTeams : [];
 
-  localTeams.value = teamsFromModel.slice(0, 3);
-  if (localTeams.value.length === 0) {
-    localTeams.value = [""];
-  }
+  localTeamsOptimal.value = opt.slice(0, 3);
+  if (!localTeamsOptimal.value.length) localTeamsOptimal.value = [""];
 
-  searchTexts.value = localTeams.value.map((v) => v || "");
+  localTeamsComfort.value = comf.slice(0, 3);
+  if (!localTeamsComfort.value.length) localTeamsComfort.value = [""];
+
+  searchTextsOptimal.value = localTeamsOptimal.value.map((v) => v || "");
+  searchTextsComfort.value = localTeamsComfort.value.map((v) => v || "");
+
   suggestion.value =
     typeof mv.suggestion === "string" ? mv.suggestion : "";
 }
@@ -304,18 +427,20 @@ watch(
 
 function emitUpdate() {
   emit("update:modelValue", {
-    teams: [...localTeams.value],
+    teams: [...localTeamsOptimal.value],
+    comfortTeams: [...localTeamsComfort.value],
     suggestion: suggestion.value,
   });
 }
 
-watch(suggestion, () => {
-  emitUpdate();
-});
+watch(suggestion, () => emitUpdate());
 
 /* ===== VALIDATION ===== */
-const hasValidTeam = computed(() =>
-  localTeams.value.some((val) => isValidTeam(val))
+const hasValidOptimalTeam = computed(() =>
+  localTeamsOptimal.value.some((val) => isValidTeam(val))
+);
+const hasValidComfortTeam = computed(() =>
+  localTeamsComfort.value.some((val) => isValidTeam(val))
 );
 
 const isSuggestionEnough = computed(
@@ -323,44 +448,61 @@ const isSuggestionEnough = computed(
 );
 
 const isFormValid = computed(
-  () => hasValidTeam.value && isSuggestionEnough.value
+  () =>
+    hasValidOptimalTeam.value &&
+    hasValidComfortTeam.value &&
+    isSuggestionEnough.value
 );
 
-const hasEmptyOrInvalidRow = computed(() =>
-  localTeams.value.some((val) => !isValidTeam(val))
+const hasEmptyOrInvalidRowOptimal = computed(() =>
+  localTeamsOptimal.value.some((val) => !isValidTeam(val))
+);
+const hasEmptyOrInvalidRowComfort = computed(() =>
+  localTeamsComfort.value.some((val) => !isValidTeam(val))
 );
 
-const canAddRow = computed(
-  () => localTeams.value.length < 3 && !hasEmptyOrInvalidRow.value
+const canAddRowOptimal = computed(
+  () =>
+    localTeamsOptimal.value.length < 3 &&
+    !hasEmptyOrInvalidRowOptimal.value
+);
+const canAddRowComfort = computed(
+  () =>
+    localTeamsComfort.value.length < 3 &&
+    !hasEmptyOrInvalidRowComfort.value
 );
 
-const validTeams = computed(() =>
-  localTeams.value.filter((t) => isValidTeam(t))
+const validTeamsOptimal = computed(() =>
+  localTeamsOptimal.value.filter((t) => isValidTeam(t))
+);
+const validTeamsComfort = computed(() =>
+  localTeamsComfort.value.filter((t) => isValidTeam(t))
 );
 
 /* ===== AUTOCOMPLETE ===== */
-function ensureSearchLength() {
-  if (searchTexts.value.length !== localTeams.value.length) {
-    searchTexts.value = localTeams.value.map((v, i) => {
-      return searchTexts.value[i] !== undefined
-        ? searchTexts.value[i]
-        : (v || "");
-    });
+function ensureSearchLength(block) {
+  const { teams, search } = getRefs(block);
+  if (search.value.length !== teams.value.length) {
+    search.value = teams.value.map((v, i) =>
+      search.value[i] !== undefined ? search.value[i] : v || ""
+    );
   }
 }
 
-function selectedExceptIndex(idx) {
-  return localTeams.value
+function selectedExceptIndex(block, idx) {
+  const { teams } = getRefs(block);
+  return teams.value
     .map((v, i) => (i === idx ? null : v || null))
     .filter((v) => v !== null);
 }
 
-function filteredList(baseList, idx) {
-  ensureSearchLength();
+function filteredList(baseList, block, idx) {
+  ensureSearchLength(block);
 
-  const used = new Set(selectedExceptIndex(idx));
-  const current = localTeams.value[idx] || "";
-  const q = (searchTexts.value[idx] || "").toLowerCase().trim();
+  const { teams, search } = getRefs(block);
+  const used = new Set(selectedExceptIndex(block, idx));
+  const current = teams.value[idx] || "";
+  const q = (search.value[idx] || "").toLowerCase().trim();
 
   return baseList.filter((team) => {
     if (team === current) {
@@ -373,97 +515,109 @@ function filteredList(baseList, idx) {
   });
 }
 
-function optionsProvForIndex(idx) {
-  return filteredList(TEAM_OPTIONS_PROV, idx);
+function optionsProvForIndex(block, idx) {
+  return filteredList(TEAM_OPTIONS_PROV, block, idx);
 }
 
-function optionsKabkoForIndex(idx) {
-  return filteredList(TEAM_OPTIONS_KABKO, idx);
+function optionsKabkoForIndex(block, idx) {
+  return filteredList(TEAM_OPTIONS_KABKO, block, idx);
 }
 
-function hasAnyOption(idx) {
+function hasAnyOption(block, idx) {
   return (
-    optionsProvForIndex(idx).length > 0 ||
-    optionsKabkoForIndex(idx).length > 0
+    optionsProvForIndex(block, idx).length > 0 ||
+    optionsKabkoForIndex(block, idx).length > 0
   );
 }
 
-function openDropdown(idx) {
+function openDropdown(block, idx) {
+  activeBlock.value = block;
   activeIndex.value = idx;
 }
 
-function closeDropdownLater(idx) {
+function isDropdownOpen(block, idx) {
+  return activeBlock.value === block && activeIndex.value === idx;
+}
+
+function closeDropdownLater(block, idx) {
   setTimeout(() => {
-    if (activeIndex.value === idx) {
+    if (isDropdownOpen(block, idx)) {
+      activeBlock.value = null;
       activeIndex.value = null;
     }
   }, 150);
 }
 
-function onSearchInput(idx) {
-  const text = (searchTexts.value[idx] || "").trim();
+function onSearchInput(block, idx) {
+  const { teams, search } = getRefs(block);
+  const text = (search.value[idx] || "").trim();
   if (!text) {
-    localTeams.value[idx] = "";
+    teams.value[idx] = "";
     emitUpdate();
   }
-  activeIndex.value = idx;
+  openDropdown(block, idx);
 }
 
-function handleBlur(idx) {
-  const currentTeam = localTeams.value[idx] || "";
-  const currentSearch = searchTexts.value[idx] || "";
+function handleBlur(block, idx) {
+  const { teams, search } = getRefs(block);
+  const currentTeam = teams.value[idx] || "";
+  const currentSearch = search.value[idx] || "";
 
-  // kalau user cuma ngetik tapi tidak pilih dari dropdown,
-  // balikin lagi ke nilai tim yang terakhir valid (atau kosong)
   if (currentSearch !== currentTeam) {
-    searchTexts.value[idx] = currentTeam;
+    search.value[idx] = currentTeam;
   }
-  closeDropdownLater(idx);
+  closeDropdownLater(block, idx);
 }
 
-function selectOption(idx, value) {
-  localTeams.value[idx] = value;
-  searchTexts.value[idx] = value;
+function selectOption(block, idx, value) {
+  const { teams, search } = getRefs(block);
+  teams.value[idx] = value;
+  search.value[idx] = value;
+  activeBlock.value = null;
   activeIndex.value = null;
   emitUpdate();
 }
 
 /* ===== ROW ACTIONS ===== */
-function addRow() {
-  if (!canAddRow.value) return;
-  localTeams.value.push("");
-  searchTexts.value.push("");
+function addRow(block) {
+  const { teams, search } = getRefs(block);
+  const canAdd =
+    block === "optimal" ? canAddRowOptimal.value : canAddRowComfort.value;
+  if (!canAdd) return;
+  teams.value.push("");
+  search.value.push("");
   emitUpdate();
 }
 
-function removeRow(idx) {
-  localTeams.value.splice(idx, 1);
-  searchTexts.value.splice(idx, 1);
+function removeRow(block, idx) {
+  const { teams, search } = getRefs(block);
+  teams.value.splice(idx, 1);
+  search.value.splice(idx, 1);
 
-  if (localTeams.value.length === 0) {
-    localTeams.value.push("");
-    searchTexts.value.push("");
+  if (!teams.value.length) {
+    teams.value.push("");
+    search.value.push("");
   }
   emitUpdate();
 }
 
 /* ===== MODAL & NEXT ===== */
+function cleanBlock(block) {
+  const { teams, search } = getRefs(block);
+  const filtered = teams.value.filter((t) => isValidTeam(t));
+  teams.value = filtered.length ? filtered : [""];
+  search.value = teams.value.map((v) => v || "");
+}
 
-// buang tim yang tidak valid sebelum modal/lanjut
 function cleanInvalidTeams() {
-  const filtered = localTeams.value.filter((t) => isValidTeam(t));
-  localTeams.value = filtered.length ? filtered : [""];
-  searchTexts.value = localTeams.value.map((v) => v || "");
+  cleanBlock("optimal");
+  cleanBlock("comfort");
   emitUpdate();
 }
 
 function handleNext() {
   if (!isFormValid.value) return;
-
-  // pastikan baris hanya berisi tim valid
   cleanInvalidTeams();
-
-  // tampilkan modal konfirmasi
   showConfirm.value = true;
 }
 
@@ -472,10 +626,9 @@ function closeConfirm() {
 }
 
 function confirmAndEmit() {
-  // sekali lagi pastikan hanya tim valid
   cleanInvalidTeams();
   showConfirm.value = false;
-  emit("next");   // sinyal ke parent untuk tampilkan hasil Belbin
+  emit("next");
 }
 </script>
 
@@ -490,23 +643,41 @@ function confirmAndEmit() {
 }
 
 .segment-description {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   color: #4b5563;
 }
 
+.pref-section {
+  margin-bottom: 1rem;
+}
+
+.pref-divider {
+  border: none;
+  border-top: 1px dashed #e5e7eb;
+  margin: 1rem 0 1.25rem;
+}
+
 /* ===== PILIHAN TIM ===== */
+/* list pilihan: jarak antar row diperbesar */
 .pref-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1.25rem;        /* ❗ tadinya 0.75rem, bikin lebih lega */
   margin-bottom: 1.25rem;
 }
 
+/* masing-masing row juga boleh dikasih sedikit margin dan tidak terlalu nempel */
 .pref-row {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;           /* jarak label–input */
 }
+
+/* kalau mau lebih longgar lagi, bisa tambahkan: */
+.pref-row + .pref-row {
+  margin-top: 0.25rem; /* tambahan kecil di antara Pilihan 1 & 2 */
+}
+
 
 .pref-label {
   width: 100px;
@@ -514,7 +685,6 @@ function confirmAndEmit() {
   color: #374151;
 }
 
-/* autocomplete wrapper */
 .pref-autocomplete {
   position: relative;
   flex: 1;
@@ -530,7 +700,6 @@ function confirmAndEmit() {
   font-size: 0.9rem;
 }
 
-/* dropdown ala materialize */
 .pref-dropdown {
   position: absolute;
   top: 100%;
@@ -581,7 +750,7 @@ function confirmAndEmit() {
 .pref-actions {
   display: flex;
   justify-content: center;
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.75rem;
 }
 
 .btn-add {
@@ -591,6 +760,7 @@ function confirmAndEmit() {
   background: #e5e7eb;
   color: #111827;
   font-weight: 600;
+  margin-top: 1%;
   cursor: pointer;
   font-size: 0.9rem;
 }
@@ -602,6 +772,7 @@ function confirmAndEmit() {
 
 /* ===== TEXTAREA SARAN ===== */
 .suggestion-block {
+  margin-top: 0.5rem;
   margin-bottom: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -615,7 +786,7 @@ function confirmAndEmit() {
 }
 
 .hashtag {
-  color: #FF8B00;
+  color: #ff8b00;
 }
 
 .suggestion-textarea {
@@ -647,6 +818,10 @@ function confirmAndEmit() {
 .btn-primary {
   background: #2563eb;
   color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .btn-primary:disabled {
@@ -662,7 +837,7 @@ function confirmAndEmit() {
 .hint {
   margin-top: 0.75rem;
   font-size: 0.85rem;
-  color: #6b7280;
+  color: #b91c1c;
 }
 
 /* ===== MODAL ===== */
@@ -704,27 +879,6 @@ function confirmAndEmit() {
   gap: 0.5rem;
 }
 
-.btn-primary {
-  padding: 0.5rem 1rem;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.9rem;
-  background: #2563eb;
-  color: white;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
 /* Spinner kecil di dalam tombol */
 .spinner {
   width: 16px;
@@ -740,5 +894,4 @@ function confirmAndEmit() {
     transform: rotate(360deg);
   }
 }
-
 </style>

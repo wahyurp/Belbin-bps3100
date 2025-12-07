@@ -63,8 +63,7 @@
 </template>
 
 <script setup>
-import { computed, reactive, watch, ref } from "vue";
-import { showToast } from "../App.vue"; // atau dari util sendiri
+import { computed, reactive, watch, ref } from "vue"; // atau dari util sendiri
 import { showToast } from "../toastBus";
 
 const props = defineProps({
@@ -104,22 +103,22 @@ watch(
 );
 
 // --- TOAST ERROR ---
-const toastVisible = ref(false);
-const toastMessage = ref("");
-let toastTimeoutId = null;
+// const toastVisible = ref(false);
+// const toastMessage = ref("");
+// let toastTimeoutId = null;
 
-function showToast(msg) {
-  toastMessage.value = msg;
-  toastVisible.value = true;
+// function showToast(msg) {
+//   toastMessage.value = msg;
+//   toastVisible.value = true;
 
-  if (toastTimeoutId) {
-    clearTimeout(toastTimeoutId);
-  }
-  toastTimeoutId = setTimeout(() => {
-    toastVisible.value = false;
-    toastTimeoutId = null;
-  }, 2500);
-}
+//   if (toastTimeoutId) {
+//     clearTimeout(toastTimeoutId);
+//   }
+//   toastTimeoutId = setTimeout(() => {
+//     toastVisible.value = false;
+//     toastTimeoutId = null;
+//   }, 2500);
+// }
 
 // --- SISA POIN ---
 // --- SISA POIN & TOTAL ---

@@ -3,8 +3,8 @@
     <div class="login-card">
       <h1 class="login-title">Login dulu yuk! Biar kita kenal</h1>
       <p class="login-subtitle">
-        Masuk menggunakan <strong>username atau email</strong> yang sudah terdaftar di daftar peserta,
-        lalu masukkan <strong>NIP</strong> sebagai password.
+        Masuk menggunakan <strong>username atau email</strong> sesuai Community BPS,
+        lalu masukkan <strong>tanggal lahir (DDMMYYYY)</strong> sebagai password.
       </p>
 
       <form @submit.prevent="handleSubmit" class="login-form">
@@ -19,16 +19,45 @@
           />
         </div>
 
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input
-            id="password"
-            v-model="password"
-            type="password"
-            required
-            placeholder="Masukkan NIP 9 digit kamu"
-          />
-        </div>
+<div class="form-group">
+  <label for="password">Password (Tanggal Lahir)</label>
+
+  <div class="password-wrapper">
+    <input
+      id="password"
+      v-model="password"
+      :type="showPassword ? 'text' : 'password'"
+      required
+      inputmode="numeric"
+      maxlength="8"
+      placeholder="Masukkan 8 digit tanggal lahir kamu (DDMMYYYY)"
+      @input="handlePasswordInput"
+    />
+
+    <button
+      type="button"
+      class="toggle-password-btn"
+      @click="togglePassword"
+      :aria-label="showPassword ? 'Sembunyikan password' : 'Tampilkan password'"
+    >
+      <span
+        v-if="!showPassword"
+        class="material-symbols-outlined"
+      >
+        visibility
+      </span>
+        <span
+        v-else
+        class="material-symbols-outlined"
+      >
+        visibility_off
+      </span>
+    </button>
+
+  </div>
+</div>
+
+
 
         <p v-if="errorMessage" class="error-text">
           {{ errorMessage }}
@@ -44,7 +73,7 @@
         </button>
 
         <p class="hint-text">
-          Username/email &amp; NIP harus sama persis dengan yang tercantum di Community BPS.
+          Contoh: Jika Anda lahir 3 Juni 1970 maka password Anda adalah <strong>03061970</strong>
         </p>
       </form>
     </div>
@@ -57,9 +86,28 @@ import { ref } from "vue";
 const emit = defineEmits(["login-success"]);
 
 const identifier = ref("");
-const password = ref("");       // NIP
+const password = ref("");      // diisi ddmmyyyy
 const loading = ref(false);
 const errorMessage = ref("");
+const showPassword = ref(false);
+
+function togglePassword() {
+  showPassword.value = !showPassword.value;
+}
+
+function handlePasswordInput(e) {
+  let v = e.target.value || "";
+  v = v.replace(/\D/g, "");   // hanya angka
+  v = v.slice(0, 8);          // max 8 digit
+  password.value = v;
+}
+
+function onPasswordInput(event) {
+  // Hanya izinkan angka & batasi 8 digit
+  const digitsOnly = (event.target.value || "").replace(/\D/g, "").slice(0, 8);
+  password.value = digitsOnly;
+  event.target.value = digitsOnly; // sinkronkan tampilan input
+}
 
 async function handleSubmit() {
   errorMessage.value = "";
@@ -72,13 +120,19 @@ async function handleSubmit() {
     return;
   }
   if (!passVal) {
-    errorMessage.value = "NIP wajib diisi.";
+    errorMessage.value = "Tanggal lahir wajib diisi.";
+    return;
+  }
+  if (passVal.length !== 8) {
+    errorMessage.value = "Tanggal lahir harus 8 digit (DDMMYYYY).";
     return;
   }
 
   loading.value = true;
-  // const GSCRIPT_URL = "https://script.google.com/macros/s/AKfycbzKJr003Ws5vzFTHjCXZaU5j0DNpcRCpmiYN-4nTlr7T8e9LatBhrxfTVpIN93DWPCC/exec";
-  const API_URL = '/.netlify/functions/belbin-proxy';
+
+  const API_URL = import.meta.env.DEV
+    ? "https://belbin3100.netlify.app/.netlify/functions/belbin-proxy" // saat npm run dev
+    : "/.netlify/functions/belbin-proxy";
 
   try {
     const res = await fetch(API_URL, {
@@ -89,7 +143,7 @@ async function handleSubmit() {
       body: JSON.stringify({
         action: "login",
         identifier: idVal, // username/email
-        password: passVal, // NIP
+        password: passVal, // tanggal lahir ddmmyyyy
       }),
     });
 
@@ -103,14 +157,15 @@ async function handleSubmit() {
       if (data.reason === "NOT_FOUND") {
         errorMessage.value = "Username / email tidak terdaftar.";
       } else if (data.reason === "WRONG_PASSWORD") {
-        errorMessage.value = "NIP tidak sesuai dengan data di sheet.";
+        errorMessage.value =
+          "Tanggal lahir tidak sesuai dengan data NIP di sheet.";
       } else if (data.reason === "ALREADY_FINISHED") {
         errorMessage.value =
           "Kamu sudah pernah mengisi dan menyelesaikan kuis ini. Terima kasih 🙌";
       } else if (data.reason === "EMPTY_IDENTIFIER") {
         errorMessage.value = "Username / email kosong.";
       } else if (data.reason === "EMPTY_PASSWORD") {
-        errorMessage.value = "NIP kosong.";
+        errorMessage.value = "Tanggal lahir kosong.";
       } else {
         errorMessage.value = "Login gagal. (" + (data.reason || "Unknown") + ")";
       }
@@ -125,8 +180,8 @@ async function handleSubmit() {
       username: data.user.username,
       nip: data.user.nip,
       nipLama: data.user.nipLama,
-      isFinished: data.user.isFinished, // <== penting
-      result: data.result || null,      // <== hasil dari sheet "hasil" kalau ada
+      isFinished: data.user.isFinished,
+      result: data.result || null,
     });
   } catch (err) {
     console.error(err);
@@ -139,7 +194,6 @@ async function handleSubmit() {
 </script>
 
 <style scoped>
-/* CSS kamu tadi sudah oke, aku biarkan sama persis */
 .login-root {
   min-height: 100vh;
   background: #020617;
@@ -207,6 +261,35 @@ input:focus {
   box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.5);
 }
 
+/* wrapper untuk input + tombol mata */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 2.3rem; /* ruang untuk ikon mata */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 0.55rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: #9ca3af;
+}
+
+.toggle-password:hover {
+  color: #e5e7eb;
+}
+
 .error-text {
   font-size: 0.8rem;
   color: #f97373;
@@ -245,5 +328,50 @@ input:focus {
   margin-top: 0.6rem;
   font-size: 0.8rem;
   color: #9ca3af;
+}
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 2.5rem; /* ruang untuk icon */
+}
+
+.toggle-password-btn {
+  position: absolute;
+  right: 0.6rem;
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #9ca3af;
+}
+
+.toggle-password-btn:hover {
+  color: #e5e7eb;
+}
+
+:global(.material-symbols-outlined) {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
 }
 </style>

@@ -3,7 +3,7 @@
 export const segments = [
   {
     id: "I",
-    title: " Hal yang Saya Yakini dapat saya kontribusikan kepada tim",
+    title: " Kontribusi yang bisa saya berikan kepada tim",
     description: "Bagikan TOTAL 11 poin untuk menggambarkan Anda.",
     totalPoints: 11,
     items: [
@@ -13,9 +13,9 @@ export const segments = [
     { id: "d", text: "Saya dapat mendorong orang lain untuk berbicara ketika saya melihat mereka memiliki ide yang dapat membantu tim" },
     { id: "e", text: "Kemampuan saya menyelesaikan sesuatu sampai tuntas sangat bergantung pada efektivitas kerja saya sendiri" },
     { id: "f", text: "Saya memiliki intuisi mengenai perasaan anggota tim" },
-    { id: "g", text: "Saya cepat menemukan apa yang paling mungkin berhasil dalam situasi yang sudah saya kenal" },
+    { id: "g", text: "Saya cepat menentukan apa yang paling efektif ketika berada dalam situasi yang sudah saya pahami" },
     { id: "h", text: "Saya bisa memberikan alasan tanpa bias atau prasangka" },
-    { id: "i", text: "Saya siap tidak dikenal untuk sementara waktu jika itu diperlukan demi hasil yang lebih baik" }
+    { id: "i", text: "Saya siap mengesampingkan pengakuan pribadi jika itu diperlukan untuk mencapai hasil terbaik" }
   ],
   },
   {
@@ -26,39 +26,39 @@ export const segments = [
     items: [
       {
         id: "a",
-        text: "Saya tidak nyaman jika pertemuan tidak terstruktur atau tidak berjalan dengan baik."
+        text: "Saya tidak nyaman jika rapat tidak terstruktur atau tidak berjalan dengan baik."
       },
       {
         id: "b",
-        text: "Saya cenderung terlalu memberi ruang pada orang lain yang punya pandangan valid namun belum sempat dibahas."
+        text: "Saya cenderung memberi kesempatan pada orang lain yang punya pandangan penting namun belum mendapat waktu untuk membahasnya."
       },
       {
         id: "c",
-        text: "Saya cenderung terlalu banyak bicara ketika membahas ide baru"
+        text: "Saya cenderung terlalu banyak bicara ketika membahas ide baru."
       },
       {
         id: "d",
-        text: "Cara berpikir saya yang sangat rasional membuat saya sulit langsung terlibat secara antusias"
+        text: "Cara berpikir saya yang sangat rasional membuat saya sulit langsung terlibat secara antusias."
       },
       {
         id: "e",
-        text: "Saya mudah terbawa emosi, baik emosi saya sendiri maupun emosi orang lain"
+        text: "Saya mudah terbawa emosi, baik emosi saya sendiri maupun emosi orang lain."
       },
       {
         id: "f",
-        text: "Saya sulit memimpin dari depan karena terlalu peka terhadap suasana kelompok"
+        text: "Saya sulit memimpin dari garis depan karena saya sangat peka terhadap suasana dalam tim."
       },
       {
         id: "g",
-        text: "Saya kadang terlalu larut dalam ide sendiri hingga kehilangan arah pembahasan"
+        text: "Saya kadang terlalu larut dalam ide sendiri hingga kehilangan arah pembahasan."
       },
       {
         id: "h",
-        text: "Saya sering dianggap terlalu khawatir pada detail dan risiko kesalahan"
+        text: "Saya sering dianggap terlalu khawatir pada detail dan risiko kesalahan."
       },
       {
         id: "i",
-        text: "Saya kadang dianggap terlalu dominan ketika sesuatu harus segera diselesaikan"
+        text: "Saya kadang dianggap terlalu dominan ketika sesuatu harus segera diselesaikan."
       }
     ],
   },
@@ -82,11 +82,11 @@ export const segments = [
       },
       {
         id: "d",
-        text: "Saya biasanya memberikan kontribusi yang berbeda dari yang sudah ada."
+        text: "Saya biasanya memberikan ide dan kontribusi yang berbeda dari yang sudah ada sebelumnya."
       },
       {
         id: "e",
-        text: "Saya dapat diandalkan memberi dukungan emosional, terutama bagi rekan yang mengalami kesulitan."
+        text: "Saya dapat memberi dukungan emosional, terutama bagi rekan yang mengalami kesulitan."
       },
       {
         id: "f",
@@ -108,13 +108,13 @@ export const segments = [
   },
  {
     id: "IV",
-    title: "Pendekatan khas saya dalam kerja kelompok adalah bahwa",
+    title: "Pendekatan yang menjadi ciri khas saya ketika bekerja dalam kelompok adalah",
     description: "Bagikan TOTAL 11 poin untuk menggambarkan Anda.",
     totalPoints: 11,
     items : [
       {
         id: "a",
-        text: "Saya mampu membuat orang lain bersemangat terhadap ide-ide dan merespons perasaan mereka."
+        text: "Saya bisa menumbuhkan antusiasme orang lain terhadap ide-ide sekaligus memahami dan menanggapi emosi mereka."
       },
       {
         id: "b",
@@ -152,7 +152,7 @@ export const segments = [
   },
   {
     id: "V",
-    title: "Saya merasa puas dalam pekerjaan karena",
+    title: "Saya merasa puas dalam bekerja karena",
     description: "Bagikan TOTAL 11 poin untuk menggambarkan Anda.",
     totalPoints: 11,
     items : [
@@ -196,7 +196,7 @@ export const segments = [
   },
   {
     id: "VI",
-    title: "Jika tiba-tiba saya diberi tugas yang sulit dengan waktu yang terbatas dan orang-orang yang tidak saya kenal",
+    title: "Jika saya tiba-tiba diberikan tugas yang sulit dengan waktu yang singkat dan harus bekerja dengan orang-orang yang belum saya kenal, maka saya",
     description: "Bagikan TOTAL 11 poin untuk menggambarkan Anda.",
     totalPoints: 11,
     items : [
@@ -214,7 +214,7 @@ export const segments = [
       },
       {
         id: "d",
-        text: "Rasa urgensi alami saya membantu memastikan pekerjaan tidak tertinggal dari jadwal."
+        text: "Rasa urgensi yang saya miliki memastikan pekerjaan tetap sesuai jadwal."
       },
       {
         id: "e",
@@ -240,7 +240,7 @@ export const segments = [
   },
   {
     id: "VII",
-    title: "Menyangkut masalah-masalah yang saya hadapi saat bekerja dalam kelompok",
+    title: "Masalah-masalah yang Saya Hadapi Ketika Bekerja dalam Tim",
     description: "Bagikan TOTAL 11 poin untuk menggambarkan Anda.",
     totalPoints: 11,
     items: [

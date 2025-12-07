@@ -113,15 +113,15 @@ Chart.register(
  */
 
 const ROLE_ORDER  = [
-  "Implementor",
-  "Co-ordinator", 
-  "Shaper",
   "Plant",
-  "Resource Investigator",
   "Monitor Evaluator",
-  "Team Worker",        
-  "Completer Finisher",
   "Specialist",
+  "Implementor",
+  "Completer Finisher",
+  "Shaper",
+  "Co-ordinator", 
+  "Team Worker",        
+  "Resource Investigator",
 ];
 
 const roleScoreMap = computed(() => {
