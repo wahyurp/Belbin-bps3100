@@ -1,8 +1,14 @@
 <template>
   <div class="app-root">
+    <!-- <div v-if="toastVisible" class="app-toast">
+      {{ toastMessage }}
+    </div> -->
+
+  <Teleport to="body">
     <div v-if="toastVisible" class="app-toast">
       {{ toastMessage }}
     </div>
+  </Teleport>
     <!-- audio background, disembunyikan -->
   <!-- <audio
     ref="bgAudio"
@@ -841,22 +847,6 @@ function triggerConfetti() {
 }
 
 
-.app-toast {
-  position: fixed;
-  /* pakai TOP, bukan bottom */
-  top: 0.75rem;
-  left: 50%;
-  transform: translateX(-50%);
-  max-width: 90%;
-  padding: 0.6rem 1rem;
-  border-radius: 999px;
-  background: #ef4444;
-  color: #fff;
-  font-size: 0.9rem;
-  font-weight: 600;
-  box-shadow: 0 10px 25px rgba(185, 28, 28, 0.4);
-  z-index: 9999;
-}
 /* ========== HEADER ========== */
 /* ROW 1: Caption + Lottie berdekatan di tengah */
 /* ROW 1: Caption + Lottie */
@@ -1157,7 +1147,7 @@ function triggerConfetti() {
   justify-content: center;
 }
 
-.app-toast {
+:global(.app-toast) {
   position: fixed;
   top: 0.75rem;
   left: 50%;
@@ -1171,6 +1161,10 @@ function triggerConfetti() {
   font-weight: 600;
   box-shadow: 0 10px 25px rgba(185, 28, 28, 0.4);
   z-index: 9999;
+}
+
+:global(.app-toast) {
+  top: calc(0.75rem + env(safe-area-inset-top));
 }
 
 
