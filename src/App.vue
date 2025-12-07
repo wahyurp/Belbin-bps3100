@@ -118,8 +118,13 @@
       type="button"
       @click="toggleMusic"
     >
-      <span v-if="isPlaying">⏸</span>
-      <span v-else>▶</span>
+      <span v-if="isPlaying"><span class="material-symbols-outlined">
+        pause
+        </span>
+</span>
+      <span v-else><span class="material-symbols-outlined">
+play_arrow
+</span></span>
     </button>
   </div>
 </template>

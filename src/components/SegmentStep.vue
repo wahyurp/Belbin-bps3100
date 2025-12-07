@@ -22,7 +22,8 @@
         </div>
         <input
           type="number"
-          min="0"
+          min="1"
+          step="1"
           class="item-input"
           :disabled="isFieldDisabled(item.id)"
           :value="localAnswers[item.id] ?? ''"
@@ -146,18 +147,49 @@ function isFieldDisabled(itemId) {
   return currentTotal.value >= props.totalPoints;
 }
 
-// --- UPDATE INPUT ---
 function updateValue(itemId, event) {
-  const raw = String(event.target.value).trim();
-  const num = Number(raw);
+  const rawOriginal = String(event.target.value);
+  const raw = rawOriginal.trim();
 
   const prevRaw = localAnswers[itemId] ?? "";
   const prevNum = Number(prevRaw || 0);
 
-  // ==== KOSONG / TIDAK VALID / NEGATIF → JADI '' ====
-  if (raw === "" || isNaN(num) || num <= 0) {
+  // ==== KOSONG → JADI '' (boleh untuk reset poin) ====
+  if (raw === "") {
     localAnswers[itemId] = "";
     emit("update:modelValue", { ...localAnswers });
+    return;
+  }
+
+  // ==== CEK KOMA / DESIMAL (1,5 / 2.3 / dsb) ====
+  // kalau kamu mau tegas: blok kalau mengandung '.' atau ','
+  if (raw.includes(".") || raw.includes(",")) {
+    showToast("Nilai harus bilangan bulat, tanpa koma atau titik.");
+    // balikin ke nilai sebelumnya di input
+    event.target.value = prevRaw === "" ? "" : String(prevRaw);
+    return;
+  }
+
+  const num = Number(raw);
+
+  // ==== CEK ANGKA VALID ====
+  if (isNaN(num) || !Number.isFinite(num)) {
+    localAnswers[itemId] = "";
+    emit("update:modelValue", { ...localAnswers });
+    return;
+  }
+
+  // ==== CEK HARUS INTEGER ====
+  if (!Number.isInteger(num)) {
+    showToast("Nilai harus bilangan bulat (0–11), tanpa koma.");
+    event.target.value = prevRaw === "" ? "" : String(prevRaw);
+    return;
+  }
+
+  // ==== CEK RANGE MINIMAL ====
+  if (num <= 0) {
+    showToast("Nilai tidak boleh nol atau negatif.");
+    event.target.value = prevRaw === "" ? "" : String(prevRaw);
     return;
   }
 
@@ -175,11 +207,9 @@ function updateValue(itemId, event) {
       showToast(
         "Poin sudah penuh. Kurangi poin di pernyataan lain terlebih dahulu."
       );
-      // PAKSA UI BALIK KE SEBELUMNYA
       event.target.value = "";
       return;
     }
-    // kalau prevNum > 0 masih boleh diubah (misal dikurangi)
   }
 
   // hitung total baru kalau nilai item ini diganti
@@ -198,7 +228,7 @@ function updateValue(itemId, event) {
     if (remaining <= 0) {
       showToast("Sisa poin sudah 0. Kurangi poin di pernyataan lain dulu.");
     } else {
-      showToast(`Sisa poin hanya ${remaining}.`);
+      showToast(`Sisa poin tinggal ${remaining}.`);
     }
 
     event.target.value = prevRaw === "" ? "" : String(prevRaw);
@@ -209,6 +239,71 @@ function updateValue(itemId, event) {
   localAnswers[itemId] = safeNum;
   emit("update:modelValue", { ...localAnswers });
 }
+
+
+// --- UPDATE INPUT ---
+// function updateValue(itemId, event) {
+//   const raw = String(event.target.value).trim();
+//   const num = Number(raw);
+
+//   const prevRaw = localAnswers[itemId] ?? "";
+//   const prevNum = Number(prevRaw || 0);
+
+//   // ==== KOSONG / TIDAK VALID / NEGATIF → JADI '' ====
+//   if (raw === "" || isNaN(num) || num <= 0) {
+//     localAnswers[itemId] = "";
+//     emit("update:modelValue", { ...localAnswers });
+//     return;
+//   }
+
+//   const safeNum = num;
+
+//   // total sekarang (sebelum perubahan)
+//   const totalBefore = Object.values(localAnswers).reduce(
+//     (acc, val) => acc + (Number(val) || 0),
+//     0
+//   );
+
+//   // === RULE 1: total sudah penuh, kolom lain yg semula 0 tidak boleh diisi ===
+//   if (totalBefore >= props.totalPoints) {
+//     if (prevNum === 0 && safeNum > 0) {
+//       showToast(
+//         "Poin sudah penuh. Kurangi poin di pernyataan lain terlebih dahulu."
+//       );
+//       // PAKSA UI BALIK KE SEBELUMNYA
+//       event.target.value = "";
+//       return;
+//     }
+//     // kalau prevNum > 0 masih boleh diubah (misal dikurangi)
+//   }
+
+//   // hitung total baru kalau nilai item ini diganti
+//   let otherSum = 0;
+//   for (const [key, val] of Object.entries(localAnswers)) {
+//     if (key !== itemId) {
+//       otherSum += Number(val) || 0;
+//     }
+//   }
+//   const newTotal = otherSum + safeNum;
+
+//   // === RULE 2: Jangan biarkan total > totalPoints (11) ===
+//   if (newTotal > props.totalPoints) {
+//     const remaining = props.totalPoints - otherSum;
+
+//     if (remaining <= 0) {
+//       showToast("Sisa poin sudah 0. Kurangi poin di pernyataan lain dulu.");
+//     } else {
+//       showToast(`Sisa poin hanya ${remaining}.`);
+//     }
+
+//     event.target.value = prevRaw === "" ? "" : String(prevRaw);
+//     return;
+//   }
+
+//   // aman → simpan
+//   localAnswers[itemId] = safeNum;
+//   emit("update:modelValue", { ...localAnswers });
+// }
 
 
 

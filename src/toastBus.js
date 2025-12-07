@@ -6,14 +6,23 @@ export const toastMessage = ref("");
 
 let timeoutId = null;
 
-export function showToast(msg) {
-  toastMessage.value = msg;
+export function showToast(message, duration = 2200) {
+  // 1) Tutup keyboard: blur elemen yang lagi fokus
+  const active = document.activeElement;
+  if (active && typeof active.blur === "function") {
+    active.blur();
+  }
+
+  // 2) Tampilkan toast
+  toastMessage.value = message;
   toastVisible.value = true;
 
-  if (timeoutId) clearTimeout(timeoutId);
-
-  timeoutId = setTimeout(() => {
+  // 3) Auto-hide setelah beberapa detik
+  window.clearTimeout(showToast._timer);
+  showToast._timer = window.setTimeout(() => {
     toastVisible.value = false;
-    timeoutId = null;
-  }, 2200);
+  }, duration);
 }
+
+
+
