@@ -30,7 +30,7 @@ export const segments = [
       },
       {
         id: "b",
-        text: "Saya cenderung memberi kesempatan pada orang lain yang punya pandangan penting namun belum mendapat waktu untuk membahasnya."
+        text: "Saya cenderung terlalu banyak memberi kesempatan pada orang lain yang punya pandangan penting namun belum mendapat waktu untuk membahasnya."
       },
       {
         id: "c",

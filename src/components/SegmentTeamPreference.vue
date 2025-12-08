@@ -189,7 +189,7 @@
         class="suggestion-textarea"
         rows="3"
         v-model="suggestion"
-        placeholder="Tulis saran, harapan, atau ide perbaikan ..."
+        placeholder="Tulis saran, harapan, atau ide perbaikan (Opsional)..."
       ></textarea>
     </div>
 
@@ -228,9 +228,6 @@
     <p v-else-if="!hasValidComfortTeam" class="hint">
       Pilih minimal 1 tim pada pertanyaan kedua.
     </p>
-    <p v-else-if="!isSuggestionEnough" class="hint">
-      Saran minimal 50 karakter.
-    </p>
 
     <!-- ============ MODAL KONFIRMASI ============ -->
     <div v-if="showConfirm" class="modal-backdrop">
@@ -238,7 +235,7 @@
         <h3>Konfirmasi Preferensi Tim</h3>
         <p class="modal-text">
           Berikut pilihan tim yang kamu isi. Pastikan sudah sesuai sebelum
-          melihat hasil Belbin:
+          melihat hasil:
         </p>
 
         <div v-if="validTeamsOptimal.length">
@@ -331,7 +328,7 @@ const TEAM_OPTIONS_PROV = [
 
 const TEAM_OPTIONS_KABKO = [
   "Statistisi Ahli Madya BPS Kabupaten/Kota",
-  "Bagian Umum BPS Kabupaten/Kota",
+  "Sub Bagian Umum BPS Kabupaten/Kota",
   "Tim Statistik Sosial BPS Kabupaten/Kota",
   "Tim Statistik Distribusi BPS Kabupaten/Kota",
   "Tim Statistik Produksi BPS Kabupaten/Kota",
@@ -443,15 +440,17 @@ const hasValidComfortTeam = computed(() =>
   localTeamsComfort.value.some((val) => isValidTeam(val))
 );
 
-const isSuggestionEnough = computed(
-  () => (suggestion.value || "").trim().length >= 50
-);
+// const isSuggestionEnough = computed(
+//   () => (suggestion.value || "").trim().length >= 50
+// );
 
 const isFormValid = computed(
   () =>
     hasValidOptimalTeam.value &&
-    hasValidComfortTeam.value &&
-    isSuggestionEnough.value
+    hasValidComfortTeam.value  
+    // hasValidOptimalTeam.value &&
+    // hasValidComfortTeam.value &&
+    // isSuggestionEnough.value
 );
 
 const hasEmptyOrInvalidRowOptimal = computed(() =>
